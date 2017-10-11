@@ -33,11 +33,12 @@ app.post("/urls", (req, res) => {
   res.render('./pages/urls_index', {urls: urls});
 });
 
-// app.post("/urls", (req, res) => {
-//   delete urlDatabase.b2xVn2;
-//   res.render('./pages/urls_index');
-// });
-//
+app.post("/urls/:id/delete", (req, res) => {
+  delete tinyDB.urlDatabase[req.params.id];
+  let urls = tinyDB.getAll();
+  res.render('./pages/urls_index', {urls: urls});
+});
+
 //This is my redirecter
 app.get("/u/:shortURL", (req, res) => {
   console.log(res.status(302));
@@ -55,21 +56,16 @@ app.get("/urls/new", (req, res) => {
 // //matching the value you enter
 //
 //
-// app.get("/urls/:id", (req, res) => {
-//   let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id]};
-//   res.render("./pages/urls_show", templateVars);
-// });
-
 app.get("/urls/:id", (req, res) => {
-  let url = tinyDB.get(req.params.id)
-  res.render("./pages/urls_show", url);
+  let templateVars = { shortURL: req.params.id, longURL: tinyDB.urlDatabase[req.params.id]};
+  res.render("./pages/urls_show", templateVars);
 });
 
-//
-// //.json is property of the express function check docs for more info
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
+
+//.json is property of the express function check docs for more info
+app.get("/urls.json", (req, res) => {
+  res.json(tinyDB.urlDatabase);
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

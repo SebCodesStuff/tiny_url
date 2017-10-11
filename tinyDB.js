@@ -3,7 +3,7 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-//make modular
+// make modular
 
 function generateRandomString() {
   let alphaNumeric =("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
@@ -23,7 +23,7 @@ function getAll() {
 
 // Read
 function get(id) {
-  return urlDatabase[id];
+  return urlDatabase[id]
 }
 
 //Create
@@ -32,28 +32,28 @@ function add(shortURL, longURL) {
   return true;
 }
 
-// //Update
-// function update(shortURL, editor) {
-//   let urlExists = get(shortURL);
-//   if (urlExists) {
-//     urlDatabase[shortURL] = editor;
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
-//
-// //Delete
-// function delete (shortURL) {
-//   if (!urlDatabase[shortURL]) {
-//     return false;
-//   }
-//   urlDatabase = urlDatabase.filter((url, index) => {
-//     return (id !== index);
-//   });
-//   return true;
-// }
-//
+//Update
+function update(shortURL, editor) {
+  let urlExists = get(shortURL);
+  if (urlExists) {
+    urlDatabase[shortURL] = editor;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+//Delete
+function destroy (shortURL) {
+  if (!urlDatabase[shortURL]) {
+    return false;
+  }
+  urlDatabase = urlDatabase.filter((url, index) => {
+    return (id !== index);
+  });
+  return true;
+}
+
 
 
 module.exports = {
@@ -63,5 +63,5 @@ module.exports = {
   add: add,
   generateRandomString: generateRandomString,
   update: update,
-  delete: delete
+  destroy: destroy
 }
