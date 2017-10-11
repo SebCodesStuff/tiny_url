@@ -22,15 +22,19 @@ app.get("/", (req, res) => {
 //This is used to add the urlDatabase to url_index
 app.get("/urls", (req, res) => {
   let urls = tinyDB.getAll();
-  res.render('./pages/urls_index', {urls: urls});
+  console.log(req.cookies)
+  res.render('./pages/urls_index', {urls: urls})
 });
 
+
+//Within /url/new creates a new url
 
 app.post("/urls", (req, res) => {
   let shortURL = tinyDB.generateRandomString();
   let longURL = req.body.longURL
-  tinyDB.add(shortURL, longURL);
+  tinyDB.add(tinyDB.urlDatabase, shortURL, longURL);
   let urls = tinyDB.getAll();
+
   res.render('./pages/urls_index', {urls: urls});
 });
 
@@ -48,6 +52,9 @@ app.post("/urls/:id/edit", (req, res) => {
   res.render('./pages/urls_index', {urls: urls});
 });
 
+
+//This is my login form response, creates a cookie and adds the
+//username to an object
 app.post("/login", (req, res) => {
   res.cookie("Username" ,req.body.username, {expires: new Date(Date.now() + 900000)})
   let urls = tinyDB.getAll();

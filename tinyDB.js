@@ -27,8 +27,8 @@ function get(id) {
 }
 
 //Create
-function add(shortURL, longURL) {
-  urlDatabase[shortURL]=longURL;
+function add(db, name, val) {
+  db[name]=val;
   return true;
 }
 
