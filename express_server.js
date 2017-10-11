@@ -39,6 +39,14 @@ app.post("/urls/:id/delete", (req, res) => {
   res.render('./pages/urls_index', {urls: urls});
 });
 
+app.post("/urls/:id/edit", (req, res) => {
+  // console.log(res.body.shortURL);
+  tinyDB.update(req.params.id, req.body.shortURL)
+  let urls = tinyDB.getAll();
+  res.render('./pages/urls_index', {urls: urls});
+});
+
+
 //This is my redirecter
 app.get("/u/:shortURL", (req, res) => {
   console.log(res.status(302));
