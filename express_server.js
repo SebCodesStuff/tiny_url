@@ -14,6 +14,10 @@ app.use(cookieParser())
 // The order of our routing is important. Express goes through these in order and stops at the first case
 //that matches
 
+//When routing the app.get(first param) is the url that triggers the response
+//the second part is where it goes
+
+
 
 app.get("/", (req, res) => {
   res.end("Hello!");
@@ -28,9 +32,9 @@ app.get("/urls", (req, res) => {
 });
 
 
-//Within /url/new creates a new url
+// //This is used to post to urls_show. Generates a new page with my new url displayed
 
-app.post("/urls", (req, res) => {
+app.post("/show", (req, res) => {
   let shortURL = tinyDB.generateRandomString();
   let longURL = req.body.longURL
   tinyDB.add(tinyDB.urlDatabase, shortURL, longURL);
@@ -38,13 +42,15 @@ app.post("/urls", (req, res) => {
   res.render('./pages/urls_show', {shortURL, longURL, username: req.cookies.username})
 });
 
-
+//Deletes a url
 app.post("/urls/:id/delete", (req, res) => {
   delete tinyDB.urlDatabase[req.params.id];
   let urls = tinyDB.getAll();
 res.render('./pages/urls_index', {urls: urls, username: req.cookies.username})
 });
 
+
+//Edits the file
 app.post("/urls/:id/edit", (req, res) => {
   // console.log(res.body.shortURL);
   tinyDB.update(req.params.id, req.body.shortURL)
@@ -68,21 +74,12 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+//When I click on create a new short url it redirects here
+
 app.get("/urls/new", (req, res) => {
   res.render("./pages/urls_new", {username: req.cookies.username}) ;
 });
 //
-// //This is used to write to urls_show, when accessing longURL it must be done in [] notation
-// //This is because if you do dot notation it's like you are navigating through the object
-// //and urlDatabase does not contain a property called req. [] notation however accesses a property
-// //matching the value you enter
-//
-//
-app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, longURL: tinyDB.urlDatabase[req.params.id], username: req.cookies.username};
-  res.render("./pages/urls_show", templateVars);
-});
-
 
 //.json is property of the express function check docs for more info
 app.get("/urls.json", (req, res) => {
