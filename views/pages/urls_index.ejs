@@ -7,11 +7,12 @@
   <% include ../partials/_header %>
     <ul>
       <% for (tinyURL in urls) { %>
-      <li><%= tinyURL%></li>
+      <li><%= tinyURL%> - <%= urls[tinyURL] %></li>
       <% } %>
     </ul>
     <div>
-      <a href = "/">Shorten a new URL</a>
+      <!-- Doesn't link to the right page -->
+      <a href = "./pages/urls_new.ejs">Shorten a new URL</a>
     </div>
 </body>
 </html>
