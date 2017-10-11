@@ -4,13 +4,13 @@
   <title>TinyApp</title>
 </head>
 <body>
-  <% include ../partials/_header %>
+  <!-- <% include ../partials/_header %> -->
     <ul>
       <% for (tinyURL in urls) { %>
       <li><%= tinyURL%> - <%= urls[tinyURL] %></li>
       <form method="POST" action="/urls/9sm5xK/delete">
         <input type="submit" value="Delete" id="delete" style="margin:10px">
-      </form>
+      </form>urlDatabase
       <% } %>
     </ul>
     <div>
