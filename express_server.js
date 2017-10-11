@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser')
 
 let tinyDB = require('./tinyDB');
 
@@ -33,6 +34,7 @@ app.post("/urls", (req, res) => {
   res.render('./pages/urls_index', {urls: urls});
 });
 
+
 app.post("/urls/:id/delete", (req, res) => {
   delete tinyDB.urlDatabase[req.params.id];
   let urls = tinyDB.getAll();
@@ -46,6 +48,11 @@ app.post("/urls/:id/edit", (req, res) => {
   res.render('./pages/urls_index', {urls: urls});
 });
 
+app.post("/login", (req, res) => {
+  res.cookie("Username" ,req.body.username, {expires: new Date(Date.now() + 900000)})
+  let urls = tinyDB.getAll();
+  res.render('./pages/urls_index', {urls: urls});
+});
 
 //This is my redirecter
 app.get("/u/:shortURL", (req, res) => {
