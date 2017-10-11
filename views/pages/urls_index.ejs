@@ -8,11 +8,14 @@
     <ul>
       <% for (tinyURL in urls) { %>
       <li><%= tinyURL%> - <%= urls[tinyURL] %></li>
+      <form method="POST" action="/urls/9sm5xK/delete">
+        <input type="submit" value="Delete" id="delete" style="margin:10px">
+      </form>
       <% } %>
     </ul>
     <div>
       <!-- Doesn't link to the right page -->
-      <a href = "./pages/urls_new.ejs">Shorten a new URL</a>
+      <a href = "/urls/new">Shorten a new URL</a>
     </div>
 </body>
 </html>

@@ -40,7 +40,6 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body.longURL);
   let shortURL = generateRandomString();
   let longURL = req.body.longURL
   urlDatabase[shortURL] = longURL;
@@ -48,6 +47,10 @@ app.post("/urls", (req, res) => {
   res.render('./pages/urls_index', templateVars);
 });
 
+app.post("/urls", (req, res) => {
+  delete urlDatabase.b2xVn2;
+  res.render('./pages/urls_index');
+});
 
 //This is my redirecter
 app.get("/u/:shortURL", (req, res) => {
