@@ -10,12 +10,12 @@
       <li><%= tinyURL%> - <%= urls[tinyURL] %></li>
       <!-- Make a class to make these two inline -->
       <!-- EJS will parse the string interpolation from within the string -->
-      <form method="POST" action="/urls/<%= tinyURL%>/delete")>
-        <input type="submit" value="delete" id="delete" style="margin:10px">
-      </form>
-      <form method="POST" action="/urls/<%= tinyURL%>/edit">
+      <form method="POST" action="/urls/<%= tinyURL%>/edit" style="display:inline">
         <input name="shortURL" type="text" id="edit">
         <input type="submit" value="Edit">
+      </form>
+      <form method="POST" action="/urls/<%= tinyURL%>/delete" style="display:inline">
+        <input type="submit" value="delete" id="delete" style="margin:10px">
       </form>
       <% } %>
     </ul>

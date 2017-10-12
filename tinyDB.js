@@ -3,12 +3,17 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+let users = {"userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  }};
+
 // make modular
 
 function generateRandomString() {
   let alphaNumeric =("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
   let randomStr = "";
-  console.log(alphaNumeric.length);
   for (let i = 0; i<6; i++) {
     randomStr += alphaNumeric[(Math.floor(Math.random()*62))]
   }
@@ -58,6 +63,7 @@ function destroy (shortURL) {
 
 module.exports = {
   urlDatabase: urlDatabase,
+  users: users,
   getAll: getAll,
   get: get,
   add: add,
