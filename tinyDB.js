@@ -3,12 +3,21 @@ let urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// make modular
+let users = {"userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "123"
+  }};
+  //
+  // for (user in users) {
+  //   if(users[user].email === "user@example.com" )
+  //   console.log(users[user].email+"works");
+  // }
+
 
 function generateRandomString() {
   let alphaNumeric =("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
   let randomStr = "";
-  console.log(alphaNumeric.length);
   for (let i = 0; i<6; i++) {
     randomStr += alphaNumeric[(Math.floor(Math.random()*62))]
   }
@@ -34,13 +43,7 @@ function add(db, name, val) {
 
 //Update
 function update(shortURL, editor) {
-  let urlExists = get(shortURL);
-  if (urlExists) {
     urlDatabase[shortURL] = editor;
-    return true;
-  } else {
-    return false;
-  }
 }
 
 //Delete
@@ -58,6 +61,7 @@ function destroy (shortURL) {
 
 module.exports = {
   urlDatabase: urlDatabase,
+  users: users,
   getAll: getAll,
   get: get,
   add: add,

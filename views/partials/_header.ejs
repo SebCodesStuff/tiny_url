@@ -1,11 +1,11 @@
 <header>
   <h1>My Header</h1>
-  <% if (username) { %>
-    <h2>Welcome <%= username %></h2>
+  <% if (userID) { %>
+    <form action="/logout" method="POST">
+        <input type="submit" value ="Logout" style="decoration: none">
+    </form>
   <% } else { %>
-  <form method="POST" action="/login">
-    <input name="username" type="text" id="username" placeholder="MyNewUsername1234">
-    <input type="submit" value="Create Account">
-  </form>
-  <% } %>
+    <a href="/register"> Register</a>
+
+    <%console.log(userID) } %>
 </header>
