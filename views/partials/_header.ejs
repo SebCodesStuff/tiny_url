@@ -2,10 +2,5 @@
   <h1>My Header</h1>
   <% if (userID) { %>
     <h2>Welcome <%= userID %></h2>
-  <% } else { %>
-  <form method="POST" action="/login">
-    <input name="userID" type="text" id="userID" placeholder="MyNewUsername1234">
-    <input type="submit" value="Create Account">
-  </form>
   <% } %>
 </header>

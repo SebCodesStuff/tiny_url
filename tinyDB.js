@@ -6,10 +6,14 @@ let urlDatabase = {
 let users = {"userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: "123"
   }};
+  //
+  // for (user in users) {
+  //   if(users[user].email === "user@example.com" )
+  //   console.log(users[user].email+"works");
+  // }
 
-// make modular
 
 function generateRandomString() {
   let alphaNumeric =("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");

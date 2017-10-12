@@ -50,6 +50,10 @@ app.get("/urls.json", (req, res) => {
   res.json(tinyDB.urlDatabase);
 });
 
+app.get("/login", (req, res) => {
+  res.render("./pages/login", {userID: tinyDB.users[req.cookies.userID]})
+})
+
 
 app.post("/register", (req, res) => {
 //If I ever have an error make this var instead of let
@@ -87,7 +91,11 @@ app.post("/register", (req, res) => {
 //This is my login form response, creates a cookie and adds the
 //username to an object
 app.post("/login", (req, res) => {
-  res.cookie("userID" ,req.body.userID, {expires: new Date(Date.now() + 900000)})
+  for (user in tinyDB.users) {
+    if (tinyDB.users[user].email === req.body.email & tinyDB.users[user].password === req.body.password) {
+      res.cookie("userID", tinyDB.users[user].id)
+    }
+  }
   let urls = tinyDB.getAll();
   res.render('./pages/urls_index', {userID: tinyDB.users[req.cookies.userID], urls: urls})
 });
