@@ -17,12 +17,23 @@ app.use(cookieParser());
 //When routing the app.get(first param) is the url that triggers the response
 //the second part is where it goes
 
+app.post("/logout", (req, res) => {
+  // res.clearCookie("/")
+  let urls = tinyDB.getAll();
+  res.render('./pages/urls_index', {urls: urls, userID : null})
+});
+
 
 //This is used to add the urlDatabase to url_index
 app.get("/", (req, res) => {
   let urls = tinyDB.getAll();
-  let userID = tinyDB.users[req.cookies.userID].id
-  res.render('./pages/urls_index', {urls: urls, userID: userID})
+
+  if (!tinyDB.users[req.cookies.userID]) {
+    res.render('./pages/urls_index', {urls: urls, userID : null})
+  }else {
+    let userID = tinyDB.users[req.cookies.userID].id;
+    res.render('./pages/urls_index', {urls: urls, userID: userID})
+  }
 });
 
 //A register endpoint with a form
@@ -91,14 +102,10 @@ app.post("/register", (req, res) => {
   res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
 })
 
+
+
 //This is my login form response, creates a cookie and adds the
 //userID to an object
-app.post("/logout"), (req, res) => {
-  res.clearCookie("/")
-  let urls = tinyDB.getAll();
-  res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
-}
-
 app.post("/login", (req, res) => {
   let registeredUser = false;
   for (user in tinyDB.users) {

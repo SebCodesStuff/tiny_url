@@ -1,8 +1,11 @@
 <header>
   <h1>My Header</h1>
   <% if (userID) { %>
-    <a href="/logout"> Logout</a>
+    <form action="/logout" method="POST">
+        <input type="submit" value ="Logout" style="decoration: none">
+    </form>
   <% } else { %>
     <a href="/register"> Register</a>
+
     <%console.log(userID) } %>
 </header>
