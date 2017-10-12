@@ -19,7 +19,6 @@ app.use(cookieParser());
 
 
 //This is used to add the urlDatabase to url_index
-//Passes in an object to the header..... why would we do that
 app.get("/", (req, res) => {
   let urls = tinyDB.getAll();
   res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
@@ -61,15 +60,15 @@ app.post("/register", (req, res) => {
 
   //this checks to make sure my email or password section isn't empty
   if (req.body.email === "" || req.body.password === "") {
-    console.log("User not created. Password or Email is empty");
+    res.status(403).send("User not created. Password or Email is empty");
   } else {
     //This checks to see if the email exists done as en alse that way I don't have to
     // add the render part to each and every conditional. That being said if I can't figure out
     // how to alert then maybe I should send it different error pages
     for (let id in tinyDB.users) {
       if (tinyDB.users[id].email === req.body.email) {
-        console.log("User not created. This email is already registered to an account");
         availableEmail = false;
+        res.status(403).send("User not created. This email is already registered to an account");
       }
     };
     //If both of the conditions above are false made possible by the availableEmail var
@@ -89,12 +88,17 @@ app.post("/register", (req, res) => {
 })
 
 //This is my login form response, creates a cookie and adds the
-//username to an object
+//userID to an object
 app.post("/login", (req, res) => {
+  let registeredUser = false;
   for (user in tinyDB.users) {
     if (tinyDB.users[user].email === req.body.email & tinyDB.users[user].password === req.body.password) {
       res.cookie("userID", tinyDB.users[user].id)
+      registeredUser = true;
     }
+  }
+  if (registeredUser === false) {
+    res.status(403).send("403: You're username and password did not match a registered user. Try again or register.");
   }
   let urls = tinyDB.getAll();
   res.render('./pages/urls_index', {userID: tinyDB.users[req.cookies.userID], urls: urls})
