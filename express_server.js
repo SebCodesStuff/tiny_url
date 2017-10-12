@@ -21,7 +21,8 @@ app.use(cookieParser());
 //This is used to add the urlDatabase to url_index
 app.get("/", (req, res) => {
   let urls = tinyDB.getAll();
-  res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
+  let userID = tinyDB.users[req.cookies.userID].id
+  res.render('./pages/urls_index', {urls: urls, userID: userID})
 });
 
 //A register endpoint with a form
@@ -61,6 +62,7 @@ app.post("/register", (req, res) => {
   //this checks to make sure my email or password section isn't empty
   if (req.body.email === "" || req.body.password === "") {
     res.status(403).send("User not created. Password or Email is empty");
+    return;
   } else {
     //This checks to see if the email exists done as en alse that way I don't have to
     // add the render part to each and every conditional. That being said if I can't figure out
@@ -69,6 +71,7 @@ app.post("/register", (req, res) => {
       if (tinyDB.users[id].email === req.body.email) {
         availableEmail = false;
         res.status(403).send("User not created. This email is already registered to an account");
+        return;
       }
     };
     //If both of the conditions above are false made possible by the availableEmail var
@@ -83,12 +86,19 @@ app.post("/register", (req, res) => {
       }
     }
   }
+  console.log(tinyDB.users);
   let urls = tinyDB.getAll();
   res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
 })
 
 //This is my login form response, creates a cookie and adds the
 //userID to an object
+app.post("/logout"), (req, res) => {
+  res.clearCookie("/")
+  let urls = tinyDB.getAll();
+  res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
+}
+
 app.post("/login", (req, res) => {
   let registeredUser = false;
   for (user in tinyDB.users) {

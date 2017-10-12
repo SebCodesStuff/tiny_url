@@ -1,6 +1,8 @@
 <header>
   <h1>My Header</h1>
   <% if (userID) { %>
-    <h2>Welcome <%= userID %></h2>
-  <% } %>
+    <a href="/logout"> Logout</a>
+  <% } else { %>
+    <a href="/register"> Register</a>
+    <%console.log(userID) } %>
 </header>
