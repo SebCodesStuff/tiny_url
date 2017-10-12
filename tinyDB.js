@@ -43,13 +43,7 @@ function add(db, name, val) {
 
 //Update
 function update(shortURL, editor) {
-  let urlExists = get(shortURL);
-  if (urlExists) {
     urlDatabase[shortURL] = editor;
-    return true;
-  } else {
-    return false;
-  }
 }
 
 //Delete
