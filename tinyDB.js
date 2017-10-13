@@ -6,6 +6,12 @@ let urlDatabase =
   "9sm5xK": "http://www.google.com",
   userID: "userRandomID"}};
 
+  //Update
+  function update(shortURL, editor) {
+    urlDatabase[shortURL] = editor;
+  }
+
+
 // console.log(urlDatabase["9sm5xK"].userID);
 
 let users = {"userRandomID": {
@@ -63,14 +69,10 @@ function get(id) {
 
 //Create
 function add(db, name, val) {
-  db[name]=val;
+  db[name][name]=val;
   return true;
 }
 
-//Update
-function update(shortURL, editor) {
-    urlDatabase[shortURL][shortURL] = editor;
-}
 
 //Delete
 function destroy (shortURL) {

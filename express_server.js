@@ -35,12 +35,13 @@ app.use(cookieSession({
 
 app.get("/", (req, res) => {
   if (!tinyDB.users[req.session.userID]) {
-    console.log("displaying user info", req.session.userID);
-    console.log(tinyDB.users);
+    console.log("displaying the if statement condition", tinyDB.users[req.session.userID]);
+    console.log(req.session.userID);
     res.render('./pages/urls_index', {urls: null, userID : null})
   } else {
-    console.log("inside root if statement", tinyDB.users);
+    console.log("inside root if statement", tinyDB.urlsForUser(req.session.userID));
       let urls = tinyDB.urlsForUser(req.session.userID);
+      console.log(urls);
       let userID = tinyDB.users[req.session.userID].id;
       res.render('./pages/urls_index', {urls: urls, userID: userID})
     }
@@ -127,6 +128,7 @@ app.post("/register", (req, res) => {
           password: hashedPassword
       }
     }
+    console.log(tinyDB.userID);
     let urls = tinyDB.urlsForUser(req.session.userID);
     res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.session.userID]})
   }
@@ -141,10 +143,6 @@ app.post("/login", (req, res) => {
   let registeredUser = false;
   for (user in tinyDB.users) {
     let password = tinyDB.users[user].password;
-    console.log("my email", tinyDB.users[user].email, "&",req.body.email);
-    console.log(req.body.password, "&", password);
-    console.log(bcrypt.compareSync(req.body.password, password));
-    // My encryptor isn't working anymore
     if (tinyDB.users[user].email === req.body.email && bcrypt.compareSync(req.body.password, password)) {
       req.session.userID = tinyDB.users[user].id;
       // req.session("userID", tinyDB.users[user].id)
@@ -165,10 +163,11 @@ app.post("/login", (req, res) => {
 
 app.post("/show", (req, res) => {
   let shortURL = tinyDB.generateRandomString();
-  let longURL = req.body.longURL
-  tinyDB.add(tinyDB.urlDatabase, shortURL, longURL);
-  // let urls = tinyDB.getAll();
-  res.render('./pages/urls_show', {shortURL, longURL, userID: tinyDB.users[req.session.userID]})
+  let longURL = req.body.longURL;
+  let user = req.session.userID;
+  tinyDB.urlDatabase[shortURL]={[shortURL]: longURL, userID: user}
+  let urls = tinyDB.getAll();
+  res.render('./pages/urls_show', {shortURL: shortURL, longURL: longURL, userID: tinyDB.users[req.session.userID]})
 });
 
 //Deletes a url
@@ -182,12 +181,17 @@ res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.session.u
 //Edits the file
 app.post("/urls/:id/edit", (req, res) => {
   //If you aren't the user that owns the url this page egisterbreaks
+  let shortURL = req.body.shortURL;
+  console.log(tinyDB.users[req.session.userID]);
   if (tinyDB.users[req.session.userID].id !== tinyDB.urlDatabase[req.params.id].userID) {
     res.status(403).send("403: You cannot delete this url it belongs to another user");
     return;
   } else {
-    tinyDB.update(req.params.id, req.body.shortURL)
-    let urls = tinyDB.getAll();
+    // req.body.shortURL is the longURL
+    // req.params.id is the shortURL
+    tinyDB.urlDatabase[req.params.id]={[req.params.id]: req.body.shortURL, userID:tinyDB.users[req.session.userID].id }
+    // tinyDB.update(req.params.id, req.body.shortURL)
+    let urls = tinyDB.urlsForUser(req.session.userID);
     res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.session.userID]})
   }
 });

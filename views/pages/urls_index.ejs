@@ -7,7 +7,7 @@
   <% include ../partials/_header %>
     <ul>
       <% for (tinyURL in urls) { %>
-      <li><%= tinyURL%> - <%= urls[tinyURL][tinyURL] %></li>
+      <li><%= tinyURL%> - <%= urls[tinyURL] %></li>
       <!-- Make a class to make these two inline -->
       <!-- EJS will parse the string interpolation from within the string -->
       <form method="POST" action="/urls/<%= tinyURL%>/edit" style="display:inline">
