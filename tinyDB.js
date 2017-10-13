@@ -1,7 +1,12 @@
-let urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+let urlDatabase =
+{"b2xVn2":{
+  b2xVn2: "http://www.lighthouselabs.ca",
+  userID : "userRandomID"},
+"9sm5xK": {
+  "9sm5xK": "http://www.google.com",
+  userID: "userRandomID"}};
+
+// console.log(urlDatabase["9sm5xK"].userID);
 
 let users = {"userRandomID": {
     id: "userRandomID",
@@ -24,11 +29,16 @@ function generateRandomString() {
   return randomStr;
 }
 
+///Start below need to figure out how to pull both parts
+
 //Get all
 function getAll() {
-  return urlDatabase;
+  for(key in urlDatabase) {
+  return  urlDatabase;
+  }
 }
 
+getAll()
 
 // Read
 function get(id) {
@@ -43,7 +53,7 @@ function add(db, name, val) {
 
 //Update
 function update(shortURL, editor) {
-    urlDatabase[shortURL] = editor;
+    urlDatabase[shortURL][shortURL] = editor;
 }
 
 //Delete

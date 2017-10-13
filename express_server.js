@@ -23,18 +23,26 @@ app.post("/logout", (req, res) => {
   res.render('./pages/urls_index', {urls: urls, userID : null})
 });
 
+///Make a filter function that narrows down my urls
+
 
 //This is used to add the urlDatabase to url_index
-app.get("/", (req, res) => {
-  let urls = tinyDB.getAll();
 
+app.get("/", (req, res) => {
+  console.log("in root");
   if (!tinyDB.users[req.cookies.userID]) {
-    res.render('./pages/urls_index', {urls: urls, userID : null})
-  }else {
-    let userID = tinyDB.users[req.cookies.userID].id;
-    res.render('./pages/urls_index', {urls: urls, userID: userID})
+    res.render('./pages/urls_index', {urls: null, userID : null})
+  } else {
+    for (shortURL in tinyDB.urlDatabase) {
+      if (tinyDB.urlDatabase[shortURL].userID === req.cookies.userID) {
+        let urls = tinyDB.urlDatabase[shortURL[shortURL]];
+        let userID = tinyDB.users[req.cookies.userID].id;
+        res.render('./pages/urls_index', {urls: urls, userID: userID})
+      }
+    }
   }
 });
+
 
 //A register endpoint with a form
 
@@ -52,7 +60,13 @@ app.get("/u/:shortURL", (req, res) => {
 //When I click on create a new short url it redirects here
 
 app.get("/urls/new", (req, res) => {
-  res.render("./pages/urls_new", {userID: tinyDB.users[req.cookies.userID]}) ;
+  let urls = tinyDB.getAll();
+  if (!tinyDB.users[req.cookies.userID]) {
+    res.render('./pages/register', {urls: urls, userID : null})
+  } else {
+    let userID = tinyDB.users[req.cookies.userID].id;
+    res.render('./pages/urls_new', {urls: urls, userID: userID})
+  }
 });
 //
 
@@ -116,6 +130,7 @@ app.post("/login", (req, res) => {
   }
   if (registeredUser === false) {
     res.status(403).send("403: You're username and password did not match a registered user. Try again or register.");
+    return;
   }
   let urls = tinyDB.getAll();
   res.render('./pages/urls_index', {userID: tinyDB.users[req.cookies.userID], urls: urls})
@@ -141,10 +156,15 @@ res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.u
 
 //Edits the file
 app.post("/urls/:id/edit", (req, res) => {
-  // console.log(res.body.shortURL);
-  tinyDB.update(req.params.id, req.body.shortURL)
-  let urls = tinyDB.getAll();
-  res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
+  //If you aren't the user that owns the url this page egisterbreaks
+  if (tinyDB.users[req.cookies.userID].id !== tinyDB.urlDatabase[req.params.id].userID) {
+    res.status(403).send("403: You cannot delete this url it belongs to another user");
+    return;
+  } else {
+    tinyDB.update(req.params.id, req.body.shortURL)
+    let urls = tinyDB.getAll();
+    res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
+  }
 });
 
 app.listen(PORT, () => {
