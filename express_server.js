@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser')
 
+const bcrypt = require('bcrypt');
+
 let tinyDB = require('./tinyDB');
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -34,15 +36,12 @@ app.get("/", (req, res) => {
     res.render('./pages/urls_index', {urls: null, userID : null})
   } else {
     for (shortURL in tinyDB.urlDatabase) {
-      if (tinyDB.urlDatabase[shortURL].userID === req.cookies.userID) {
-        let urls = tinyDB.urlDatabase[shortURL[shortURL]];
-        let userID = tinyDB.users[req.cookies.userID].id;
-        res.render('./pages/urls_index', {urls: urls, userID: userID})
+      let urls = tinyDB.urlsForUser(req.cookies.userID);
+      let userID = tinyDB.users[req.cookies.userID].id;
+      res.render('./pages/urls_index', {urls: urls, userID: userID})
       }
     }
-  }
-});
-
+  });
 
 //A register endpoint with a form
 
@@ -76,8 +75,11 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("./pages/login", {userID: tinyDB.users[req.cookies.userID]})
+  res.render("./pages/login") // do I need this? {userID: tinyDB.users[req.cookies.userID]})
 })
+
+
+
 
 
 app.post("/register", (req, res) => {
@@ -102,38 +104,44 @@ app.post("/register", (req, res) => {
     //If both of the conditions above are false made possible by the availableEmail var
     //we execute this block that makes a user
     if (availableEmail === true) {
+      let password = req.body.password;
       const randomID = tinyDB.generateRandomString();
+      let hashedPassword = bcrypt.hashSync(password,10);
       res.cookie("userID", randomID)
       tinyDB.users[randomID] = {
           id: randomID,
           email: req.body.email,
-          password: req.body.password
+          password: hashedPassword
       }
     }
+    console.log(tinyDB.users);
+    let urls = tinyDB.getAll();
+    res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
   }
-  console.log(tinyDB.users);
-  let urls = tinyDB.getAll();
-  res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.cookies.userID]})
-})
-
+});
 
 
 //This is my login form response, creates a cookie and adds the
-//userID to an object
+// userID to an object
 app.post("/login", (req, res) => {
   let registeredUser = false;
   for (user in tinyDB.users) {
-    if (tinyDB.users[user].email === req.body.email & tinyDB.users[user].password === req.body.password) {
+    let password = tinyDB.users[user].password;
+    console.log(bcrypt.compareSync(req.body.password, password));
+    console.log(tinyDB.users[user].password);
+    console.log(bcrypt.compareSync(req.body.password, password));
+    if (tinyDB.users[user].email === req.body.email && bcrypt.compareSync(req.body.password, password)) {
       res.cookie("userID", tinyDB.users[user].id)
       registeredUser = true;
     }
   }
   if (registeredUser === false) {
-    res.status(403).send("403: You're username and password did not match a registered user. Try again or register.");
+    res.status(403).send("403: Your username and password did not match a registered user. Try again or register.");
     return;
+  } else {
+    let urls = tinyDB.getAll();
+    res.render('./pages/urls_index', {userID: tinyDB.users[req.cookies.userID], urls: urls})
   }
-  let urls = tinyDB.getAll();
-  res.render('./pages/urls_index', {userID: tinyDB.users[req.cookies.userID], urls: urls})
 });
 
 // //This is used to post to urls_show. Generates a new page with my new url displayed

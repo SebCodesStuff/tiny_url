@@ -29,6 +29,22 @@ function generateRandomString() {
   return randomStr;
 }
 
+// How I access the longurl
+// console.log(urlDatabase[shortURL][shortURL]);
+
+
+
+function urlsForUser(id) {
+  let usersUrl = {}
+  for (shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id){
+       usersUrl[shortURL]= (urlDatabase[shortURL][shortURL]);
+    }
+  }
+  return usersUrl;
+}
+
+console.log(urlsForUser("userRandomID"));
 ///Start below need to figure out how to pull both parts
 
 //Get all
@@ -72,6 +88,7 @@ function destroy (shortURL) {
 module.exports = {
   urlDatabase: urlDatabase,
   users: users,
+  urlsForUser: urlsForUser,
   getAll: getAll,
   get: get,
   add: add,
