@@ -1,11 +1,13 @@
 <header>
   <h1>TinyUrl</h1>
+  <a href="/"> Home </a>
   <% if (userID) { %>
     <form action="/logout" method="POST">
         <input type="submit" value ="Logout" style="decoration: none">
     </form>
+    <h1>Welcome <%= userEmail %></h1>
   <% } else { %>
-    <a href="/register"> Register</a>
+    <a href="/register"> Register </a>
     <a href="/login"> Login </a>
     <% } %>
 </header>

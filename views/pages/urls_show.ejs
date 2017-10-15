@@ -5,7 +5,11 @@
 </head>
 <body>
   <% include ../partials/_header %>
-    <h1>Your Newly Shortened URL</h1>
-    <div> <%= shortURL %> - <%= longURL%>   </div>
+    <h2>Would you like to edit this URL?</h2>
+    <div> <%= shortURL %> - <%= longURL %></div>
+    <form method="POST" action="/urls/<%= shortURL %>/index" style="display:inline">
+      <input name="longURL" type="text" id="edit">
+      <input type="submit" value="Edit">
+    </form>
 </body>
 </html>
