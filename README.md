@@ -8,9 +8,12 @@ As far as I can tell there's one single bug (likely more if you really look), wh
 
 It's important to note when going through the project that both databases, and all modular functions are strored in the tinyDB file.
 
-![ "The first screen shot is of my index page. Here are all a user's short URL's are displayed in a list.""](https://github.com/SebCodesStuff/tiny_url/blob/master/docs/Index.png?raw=true)
+##The first screen shot is of my index page. Here are all a user's short URL's are displayed in a list.
 
-!["The second screen shot is the edit page that allows you to change a what a short URL directs to."](https://github.com/SebCodesStuff/tiny_url/blob/master/docs/edit-page.png?raw=true)
+![](https://github.com/SebCodesStuff/tiny_url/blob/master/docs/Index.png?raw=true)
+
+##The second screen shot is the edit page that allows you to change a what a short URL directs to.
+![](https://github.com/SebCodesStuff/tiny_url/blob/master/docs/edit-page.png?raw=true)
 
 
 ## Dependencies
