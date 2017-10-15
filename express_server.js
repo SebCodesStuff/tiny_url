@@ -12,9 +12,6 @@ var PORT = process.env.PORT || 8080; // default port 8080
 
 app.set('view engine',"ejs");
 
-app.get("/login", (req, res) => {
-  res.render("./pages/login")
-})
 
 app.use(cookieSession({
   name: 'session',
@@ -35,9 +32,25 @@ app.use(cookieSession({
 
 app.get("/", (req, res) => {
   if (!tinyDB.users[req.session.userID]) {
-    console.log("displaying the if statement condition", tinyDB.users[req.session.userID]);
-    console.log(req.session.userID);
-    res.render('./pages/urls_index', {urls: null, userID : null})
+    res.render('./pages/login', {userID: null});
+  } else {
+    res.redirect('/urls');
+  }
+});
+
+app.get("/login", (req, res) => {
+  res.render('./pages/login', {userID: null});
+})
+//A register endpoint with a form, if logged in redirect
+
+app.get("/register", (req, res) => {
+  res.render('./pages/register')
+});
+
+app.get("/urls", (req, res) => {
+  if (!tinyDB.users[req.session.userID]) {
+    res.status(401).send("401: Must be logged in to view this page. Please login or register.");
+    return;
   } else {
     console.log("inside root if statement", tinyDB.urlsForUser(req.session.userID));
       let urls = tinyDB.urlsForUser(req.session.userID);
@@ -47,11 +60,6 @@ app.get("/", (req, res) => {
     }
   });
 
-//A register endpoint with a form
-
-app.get("/register", (req, res) => {
-  res.render('./pages/register')
-});
 
 //This is my redirecter
 app.get("/u/:shortURL", (req, res) => {
@@ -62,13 +70,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 //When I click on create a new short url it redirects here
 
-app.get("/urls/new", (req, res) => {
+app.get("/urls/:id", (req, res) => {
   let urls = tinyDB.getAll();
   if (!tinyDB.users[req.session.userID]) {
     res.render('./pages/register', {urls: urls, userID : null})
   } else {
     let userID = tinyDB.users[req.session.userID].id;
-    res.render('./pages/urls_new', {urls: urls, userID: userID})
+    res.render('./pages/urls_new', {urls: req.params.id, userID: userID})
   }
 });
 //
@@ -78,15 +86,18 @@ app.get("/urls.json", (req, res) => {
   res.json(tinyDB.urlDatabase);
 });
 
-app.get("/login", (req, res) => {
-  res.render("./pages/login")
-})
-
-app.post("/", (req, res) => {
+//Post should redirect to the urls/id page
+app.post("/urls", (req, res) => {
+  let shortURL = tinyDB.generateRandomString();
+  let longURL = req.body.longURL;
+  let user = req.session.userID;
+  tinyDB.urlDatabase[shortURL]={[shortURL]: longURL, userID: user}
   let urls = tinyDB.urlsForUser(req.session.userID);
-  let userID = tinyDB.users[req.session.userID].id;
-  res.render('./pages/urls_index', {urls: urls, userID: userID})
+  res.render('./pages/urls_index', {urls: urls, shortURL: shortURL, longURL: longURL, userID: tinyDB.users[req.session.userID]})
 });
+
+//post/urls/id
+//updates
 
 app.post("/logout", (req, res) => {
   req.session = null;//res.clearCookie("/")
@@ -160,17 +171,19 @@ app.post("/login", (req, res) => {
 });
 
 // //This is used to post to urls_show. Generates a new page with my new url displayed
+// Convert the below to an edit page
 
-app.post("/show", (req, res) => {
-  let shortURL = tinyDB.generateRandomString();
-  let longURL = req.body.longURL;
-  let user = req.session.userID;
-  tinyDB.urlDatabase[shortURL]={[shortURL]: longURL, userID: user}
-  let urls = tinyDB.getAll();
-  res.render('./pages/urls_show', {shortURL: shortURL, longURL: longURL, userID: tinyDB.users[req.session.userID]})
-});
 
-//Deletes a url
+// app.post("/show", (req, res) => {
+//   let shortURL = tinyDB.generateRandomString();
+//   let longURL = req.body.longURL;
+//   let user = req.session.userID;
+//   tinyDB.urlDatabase[shortURL]={[shortURL]: longURL, userID: user}
+//   let urls = tinyDB.getAll();
+//   res.render('./pages/urls_show', {shortURL: shortURL, longURL: longURL, userID: tinyDB.users[req.session.userID]})
+// });
+
+//Deletes a url when I delet my url it shows other stuff
 app.post("/urls/:id/delete", (req, res) => {
   delete tinyDB.urlDatabase[req.params.id];
   let urls = tinyDB.getAll();
@@ -178,13 +191,13 @@ res.render('./pages/urls_index', {urls: urls, userID: tinyDB.users[req.session.u
 });
 
 
-//Edits the file
-app.post("/urls/:id/edit", (req, res) => {
+//Edits the file this is the urls/:id post that they want jsut need to remove edit and make sure everything routes
+app.post("/urls/:id", (req, res) => {
   //If you aren't the user that owns the url this page egisterbreaks
   let shortURL = req.body.shortURL;
   console.log(tinyDB.users[req.session.userID]);
   if (tinyDB.users[req.session.userID].id !== tinyDB.urlDatabase[req.params.id].userID) {
-    res.status(403).send("403: You cannot delete this url it belongs to another user");
+    res.status(401).send("401: You cannot edit this url it belongs to another user");
     return;
   } else {
     // req.body.shortURL is the longURL
